@@ -1,2 +1,3 @@
 learning-go-rss-aggregator
 .env
+docker-compose.yaml
