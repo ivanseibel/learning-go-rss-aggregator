@@ -37,3 +37,13 @@ func (apiConfig *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Req
 
 	respondWithJSON(w, http.StatusCreated, databaseUserToUser(user))
 }
+
+func (apiConfig *apiConfig) handlerGetUserByAPIKey(w http.ResponseWriter, r *http.Request) {
+	user, err := apiConfig.DB.GetUserByAPIKey(r.Context(), r.Header.Get("X-API-KEY"))
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("Error getting user: %v", err))
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, databaseUserToUser(user))
+}
