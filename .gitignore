@@ -1,3 +1,4 @@
 learning-go-rss-aggregator
 .env
 docker-compose.yaml
+postgres-data
