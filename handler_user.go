@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/ivanseibel/learning-go-rss-aggregator/internal/auth"
 	"github.com/ivanseibel/learning-go-rss-aggregator/internal/database"
 )
 
@@ -39,9 +40,15 @@ func (apiConfig *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Req
 }
 
 func (apiConfig *apiConfig) handlerGetUserByAPIKey(w http.ResponseWriter, r *http.Request) {
-	user, err := apiConfig.DB.GetUserByAPIKey(r.Context(), r.Header.Get("X-API-KEY"))
+	apikey, err := auth.GetAPIKey(r.Header)
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("Error getting user: %v", err))
+		respondWithError(w, http.StatusForbidden, fmt.Sprintf("Error getting API key: %v", err))
+		return
+	}
+
+	user, err := apiConfig.DB.GetUserByAPIKey(r.Context(), apikey)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, fmt.Sprintf("Error getting user: %v", err))
 		return
 	}
 
